@@ -850,11 +850,34 @@ footer {
   font-variant-numeric: tabular-nums;
 }
 
-.slicer-badge {
+.slicer-badge,
+.confidence {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 6px;
+}
+
+.confidence details {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.confidence summary {
+  cursor: help;
+  list-style: none;
+}
+
+.confidence summary::-webkit-details-marker {
+  display: none;
+}
+
+.confidence-inline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
 }
 
 .facts {

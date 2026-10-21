@@ -8,6 +8,7 @@ import {
   type DragEvent,
   type ReactNode,
 } from 'react'
+import { timeConfidenceFromMetadata } from './confidence'
 import { DEFAULT_PRINTER_SETTINGS, type PrinterSettings } from './domain/profile'
 import type { AnalysisResult, AnalysisWarning } from './domain/result'
 import { createEngine, type EvalJob, type WorkloadMeta } from './engine'
@@ -41,7 +42,6 @@ import {
 } from './orca-presets'
 import { ReportViewer, type BottleneckReport } from './ReportViewer'
 import {
-  compareWithSlicer,
   firstNonNegativeNumber,
   firstPositiveNumber,
   settingsFromSlicerMetadata,
@@ -113,7 +113,6 @@ function profileWithFilament(
 }
 
 function warningText(warning: AnalysisWarning, t: Dict): string {
-  if (warning.code === 'arcs') return t.warnings.arcs(formatNumber(warning.count))
   if (warning.code === 'imperial') return t.warnings.imperial
   return t.warnings.noExtrusion
 }
@@ -503,7 +502,10 @@ export default function App() {
   const ready = Boolean(meta && baselineResult)
   const objects = meta?.slicer.objects ?? []
   const density = meta ? firstPositiveNumber(meta.slicer.config.filament_density) : null
-  const comparison = baselineResult && meta ? compareWithSlicer(baselineResult.estimatedSeconds, meta.slicer) : null
+  const confidence =
+    baselineResult && meta
+      ? timeConfidenceFromMetadata(baselineResult.estimatedSeconds, meta.slicer)
+      : null
   const warnings = baselineResult?.warnings.map((warning) => warningText(warning, t)) ?? []
 
   return (
@@ -653,7 +655,7 @@ export default function App() {
             {tab === 'overview' && (
               <Overview
                 baseline={baselineResult}
-                comparison={comparison}
+                confidence={confidence}
                 density={density}
                 diameter={currentProfile.filamentDiameter}
                 warnings={warnings}
@@ -674,6 +676,7 @@ export default function App() {
             {tab === 'upgrades' && (
               <Upgrades
                 baseline={virtualBaseline ?? baselineResult}
+                confidence={confidence}
                 simulation={simulationResult}
                 computing={!simulationFresh}
                 scenarios={scenarios}

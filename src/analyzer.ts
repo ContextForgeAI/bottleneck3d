@@ -16,6 +16,11 @@ import {
   type WorkloadSegment,
 } from './domain/workload.ts'
 import {
+  discretizeArc,
+  peekArcDiscretization,
+  type ArcDiscretization,
+} from './gcode-arcs.ts'
+import {
   junctionModelFor,
   motionLimitsFromConfig,
   planSegmentTimes,
@@ -75,6 +80,7 @@ function isLayerChangeComment(line: string): boolean {
 }
 
 export class GcodeParser {
+  private readonly arcPolicy: ArcDiscretization
   private position: Position = { x: 0, y: 0, z: 0, e: 0 }
   private feedRate = 0
   private absolutePosition = true
@@ -106,6 +112,10 @@ export class GcodeParser {
   private readonly roles: string[] = []
   private readonly roleIndex = new Map<string, number>()
   private role = -1
+
+  constructor(arcPolicy: ArcDiscretization = 'orca_arcwelder') {
+    this.arcPolicy = arcPolicy
+  }
 
   push(line: string): void {
     this.lineCount += 1
@@ -150,7 +160,7 @@ export class GcodeParser {
         break
       case 'G2':
       case 'G3':
-        this.arcCount += 1
+        this.processArc(values, command === 'G2')
         break
       case 'G20':
         this.imperialUnits = true
@@ -299,22 +309,50 @@ export class GcodeParser {
     }
   }
 
-  private processMove(values: Map<string, number>): void {
-    if (values.has('F')) this.feedRate = values.get('F') ?? this.feedRate
+  private nextPosition(values: Map<string, number>): Position {
     const next = { ...this.position }
-
     for (const axis of ['X', 'Y', 'Z'] as const) {
       const value = values.get(axis)
       if (value === undefined) continue
       const key = axis.toLowerCase() as 'x' | 'y' | 'z'
       next[key] = this.absolutePosition ? value : this.position[key] + value
     }
-
     const extrusion = values.get('E')
     if (extrusion !== undefined) {
       next.e = this.absoluteExtrusion ? extrusion : this.position.e + extrusion
     }
+    return next
+  }
 
+  private processMove(values: Map<string, number>): void {
+    if (values.has('F')) this.feedRate = values.get('F') ?? this.feedRate
+    this.emitSegment(this.nextPosition(values))
+  }
+
+  private processArc(values: Map<string, number>, clockwise: boolean): void {
+    this.arcCount += 1
+    if (values.has('F')) this.feedRate = values.get('F') ?? this.feedRate
+    const start = { ...this.position }
+    const end = this.nextPosition(values)
+    const points = discretizeArc({
+      start,
+      end,
+      i: values.get('I'),
+      j: values.get('J'),
+      r: values.get('R'),
+      clockwise,
+      feedrateMmS: (this.feedRate / 60) * this.speedFactor,
+      imperial: this.imperialUnits,
+      policy: this.arcPolicy,
+    })
+    if (!points) {
+      this.emitSegment(end)
+      return
+    }
+    for (const point of points) this.emitSegment(point)
+  }
+
+  private emitSegment(next: Position): void {
     const dx = next.x - this.position.x
     const dy = next.y - this.position.y
     const dz = next.z - this.position.z
@@ -405,7 +443,7 @@ export function parseGcodeText(
   mode: SimulationMode = 'emitted_gcode_audit',
   onProgress?: ParseProgress,
 ): PrintWorkload {
-  const parser = new GcodeParser()
+  const parser = new GcodeParser(peekArcDiscretization(gcode))
   const lines = gcode.split(/\r?\n/)
   for (let index = 0; index < lines.length; index += 1) {
     parser.push(lines[index])
@@ -726,7 +764,6 @@ export function evaluateWorkload(
       : 'none'
   const warnings: AnalysisWarning[] = []
 
-  if (workload.arcCount) warnings.push({ code: 'arcs', count: workload.arcCount })
   if (workload.imperialUnits) warnings.push({ code: 'imperial' })
   if (!workload.extrusionMoveCount) warnings.push({ code: 'no_extrusion' })
 
@@ -814,7 +851,10 @@ export async function parseGcodeFile(
   file: File,
   onProgress?: ParseProgress,
 ): Promise<PrintWorkload> {
-  const parser = new GcodeParser()
+  const head = await file.slice(0, 16_384).text()
+  const tailStart = Math.max(0, file.size - 131_072)
+  const tail = tailStart > 16_384 ? await file.slice(tailStart).text() : ''
+  const parser = new GcodeParser(peekArcDiscretization(head + '\n' + tail))
   const reader = file.stream().getReader()
   const decoder = new TextDecoder()
   let remainder = ''

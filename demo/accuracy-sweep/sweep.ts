@@ -5,11 +5,22 @@
  *   node demo/accuracy-sweep/sweep.ts --models cube,quartz
  *   node demo/accuracy-sweep/sweep.ts --analyze-only
  */
-import { copyFileSync, createReadStream, existsSync, mkdirSync, writeFileSync } from 'node:fs'
+import {
+  closeSync,
+  copyFileSync,
+  createReadStream,
+  existsSync,
+  fstatSync,
+  mkdirSync,
+  openSync,
+  readSync,
+  writeFileSync,
+} from 'node:fs'
 import { createInterface } from 'node:readline'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { evaluateWorkload, GcodeParser, inferTypicalExtrusionSpeed } from '../../src/analyzer.ts'
+import { peekArcDiscretization } from '../../src/gcode-arcs.ts'
 import {
   DEFAULT_PRINTER_SETTINGS,
   type PrinterSettings,
@@ -264,8 +275,25 @@ function variants(): Variant[] {
   return out
 }
 
+function peekFileText(file: string, head = 16_384, tail = 131_072): string {
+  const fd = openSync(file, 'r')
+  try {
+    const size = fstatSync(fd).size
+    const startLen = Math.min(head, size)
+    const start = Buffer.alloc(startLen)
+    readSync(fd, start, 0, startLen, 0)
+    if (size <= head) return start.toString('utf8')
+    const endLen = Math.min(tail, size)
+    const end = Buffer.alloc(endLen)
+    readSync(fd, end, 0, endLen, size - endLen)
+    return start.toString('utf8') + '\n' + end.toString('utf8')
+  } finally {
+    closeSync(fd)
+  }
+}
+
 async function parseFile(file: string): Promise<PrintWorkload> {
-  const parser = new GcodeParser()
+  const parser = new GcodeParser(peekArcDiscretization(peekFileText(file)))
   const lines = createInterface({
     input: createReadStream(file, { encoding: 'utf8' }),
     crlfDelay: Infinity,

@@ -1,8 +1,9 @@
 // Usage: npm run compare -- <file.gcode|folder> [...] [--accel N] [--flow N] [--speed N]
-import { createReadStream, statSync, readdirSync } from 'node:fs'
+import { closeSync, createReadStream, fstatSync, openSync, readSync, readdirSync, statSync } from 'node:fs'
 import path from 'node:path'
 import { createInterface } from 'node:readline'
 import { evaluateWorkload, GcodeParser } from '../src/analyzer.ts'
+import { peekArcDiscretization } from '../src/gcode-arcs.ts'
 import {
   DEFAULT_PRINTER_SETTINGS,
   type PrinterSettings,
@@ -53,8 +54,25 @@ function collectFiles(inputs: string[]): string[] {
   })
 }
 
+function peekFileText(file: string, head = 16_384, tail = 131_072): string {
+  const fd = openSync(file, 'r')
+  try {
+    const size = fstatSync(fd).size
+    const startLen = Math.min(head, size)
+    const start = Buffer.alloc(startLen)
+    readSync(fd, start, 0, startLen, 0)
+    if (size <= head) return start.toString('utf8')
+    const endLen = Math.min(tail, size)
+    const end = Buffer.alloc(endLen)
+    readSync(fd, end, 0, endLen, size - endLen)
+    return start.toString('utf8') + '\n' + end.toString('utf8')
+  } finally {
+    closeSync(fd)
+  }
+}
+
 async function parseFile(file: string) {
-  const parser = new GcodeParser()
+  const parser = new GcodeParser(peekArcDiscretization(peekFileText(file)))
   const lines = createInterface({
     input: createReadStream(file, 'utf8'),
     crlfDelay: Infinity,

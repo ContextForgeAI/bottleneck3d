@@ -12,7 +12,8 @@
     "lint": "eslint .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "compare": "node demo/compare-slicer.ts"
+    "compare": "node demo/compare-slicer.ts",
+    "install:orca": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/install-orca-plugin.ps1"
   },
   "keywords": [
     "3d-printing",

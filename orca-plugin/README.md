@@ -53,15 +53,25 @@ the plugin through `window.orca` (`web_bridge.py`):
 
 `Bottleneck3D Window` (Plugins → Run) opens the same app in a separate window.
 
+«Check in Orca» on the Upgrades view sends `b3d.reslice` (`reslice.py`): the
+plugin writes the plate meshes (`orca.host.model()`) to STL, takes the settings
+from the config block of the last G-code, applies the change and runs the Orca
+CLI in a background thread. It answers with the variant estimate and a cached
+baseline estimate without changes. A new request cancels the running one.
+`python tests/reslice_live.py` checks this path against a real `orca-slicer.exe`.
+
 ## Install into OrcaSlicer 2.5
 
+From the web app root:
+
 ```bash
-npm run build:orca          # from the web app root; writes web/index.html
-uv build --wheel --out-dir /tmp/b3d-wheel
+npm run install:orca
 ```
 
-Copy the wheel into `%APPDATA%\OrcaSlicer\orca_plugins\bottleneck3d\` (one
-`.whl` per folder) or use Plugins → Install local plugin, then restart Orca.
+It runs `npm run build:orca` (writes `web/index.html`), builds the wheel with
+`uv build` and copies it into `%APPDATA%\OrcaSlicer\orca_plugins\bottleneck3d\`
+(one `.whl` per folder). Alternatively use Plugins → Install local plugin.
+Restart Orca afterwards.
 The slicing step is optional and enabled per process preset: Process → Others
 → Slicing Pipeline Plugin (Advanced mode). Tracebacks go to
 `%APPDATA%\OrcaSlicer\log\python_*.log`.
@@ -69,7 +79,7 @@ The slicing step is optional and enabled per process preset: Process → Others
 ## Local checks
 
 ```bash
-python3 -m unittest discover -s tests
+uv run --with pytest pytest tests
 ```
 
 Generate a local probe report from bundled fixtures:
@@ -95,7 +105,7 @@ python3 -m pip wheel . --no-deps --wheel-dir /tmp/bottleneck3d-wheel
 This verifies Python packaging only. Actual plugin discovery still requires a
 real OrcaSlicer runtime.
 
-## Current goal
+## Not verified yet
 
-Verify which profile values are available through Orca's plugin context before
-building the real interactive panel and reslice simulation.
+The reslice path is tested with fake hosts and a real Orca CLI, but not yet
+from inside a running Orca GUI (background thread, `post_message` from it).

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   analyzeGcodeText,
+  parseGcodeText,
 } from './analyzer'
 import type { PrinterSettings } from './domain/profile'
 
@@ -117,10 +118,77 @@ describe('analyzeGcodeText', () => {
     expect(result.warnings.map((warning) => warning.code)).not.toContain('no_extrusion')
   })
 
-  it('warns when arcs cannot be included', () => {
-    const result = analyzeGcodeText('G2 X10 Y10 I5 J5 F1200', profile)
+  it('turns a G2 I/J full circle into G1-like segments and returns to the start', () => {
+    const workload = parseGcodeText(
+      ['G90', 'G1 X10 Y10 F6000', 'G2 X10 Y10 I5 J0'].join('\n'),
+    )
+    const arcs = workload.segments.slice(1)
+    const travel = arcs.reduce((sum, segment) => sum + segment.distance, 0)
+    const x = workload.segments.reduce((sum, segment) => sum + segment.dx, 0)
+    const y = workload.segments.reduce((sum, segment) => sum + segment.dy, 0)
 
-    expect(result.warnings).toContainEqual({ code: 'arcs', count: 1 })
+    expect(workload.arcCount).toBe(1)
+    expect(arcs.length).toBeGreaterThan(8)
+    expect(travel).toBeCloseTo(2 * Math.PI * 5, 1)
+    expect(x).toBeCloseTo(10, 3)
+    expect(y).toBeCloseTo(10, 3)
+    expect(analyzeGcodeText('G2 X10 Y10 I5 J0 F1200', profile).warnings.map((w) => w.code)).not.toContain(
+      'arcs',
+    )
+  })
+
+  it('turns a G3 I/J quarter-circle into segments ending at the target', () => {
+    const workload = parseGcodeText(
+      ['G90', 'G1 X10 Y0 F6000', 'G3 X0 Y10 I-10 J0'].join('\n'),
+    )
+    const arcs = workload.segments.slice(1)
+    const travel = arcs.reduce((sum, segment) => sum + segment.distance, 0)
+    const x = workload.segments.reduce((sum, segment) => sum + segment.dx, 0)
+    const y = workload.segments.reduce((sum, segment) => sum + segment.dy, 0)
+
+    expect(arcs.length).toBeGreaterThan(4)
+    expect(travel).toBeCloseTo((Math.PI * 10) / 2, 1)
+    expect(x).toBeCloseTo(0, 3)
+    expect(y).toBeCloseTo(10, 3)
+  })
+
+  it('accepts R-form G3 with the same geometry as I/J', () => {
+    const ij = parseGcodeText(['G90', 'G1 X10 Y0 F6000', 'G3 X0 Y10 I-10 J0'].join('\n'))
+    const r = parseGcodeText(['G90', 'G1 X10 Y0 F6000', 'G3 X0 Y10 R10'].join('\n'))
+    const length = (workload: typeof ij) =>
+      workload.segments.slice(1).reduce((sum, segment) => sum + segment.distance, 0)
+
+    expect(length(r)).toBeCloseTo(length(ij), 3)
+    expect(r.segments.at(-1)?.z).toBe(0)
+  })
+
+  it('splits relative E across G2/G3 segments and keeps the role', () => {
+    const workload = parseGcodeText(
+      [
+        'G90',
+        'M83',
+        ';TYPE:Outer wall',
+        'G1 X10 Y0 F6000',
+        'G3 X0 Y10 I-10 J0 E1.2',
+      ].join('\n'),
+    )
+    const arcs = workload.segments.filter((segment) => segment.extrusionLength > 0)
+    const extruded = arcs.reduce((sum, segment) => sum + segment.extrusionLength, 0)
+
+    expect(workload.arcCount).toBe(1)
+    expect(extruded).toBeCloseTo(1.2, 6)
+    expect(arcs.length).toBeGreaterThan(1)
+    expect(arcs.every((segment) => workload.roles[segment.role] === 'Outer wall')).toBe(true)
+  })
+
+  it('interpolates Z along a helical G3', () => {
+    const workload = parseGcodeText(
+      ['G90', 'G1 X10 Y0 Z0 F6000', 'G3 X0 Y10 Z2 I-10 J0'].join('\n'),
+    )
+    const last = workload.segments.at(-1)
+
+    expect(last?.z).toBeCloseTo(2, 6)
+    expect(workload.segments.some((segment) => segment.dz > 0)).toBe(true)
   })
 
   it('scales path speed from file typical and caps by flow', () => {

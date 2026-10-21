@@ -1,33 +1,74 @@
 import { useState } from 'react'
 import { CategoryList, FileFacts, SpeedProfile, Waffle } from '../charts'
+import type { TimeConfidence } from '../confidence'
 import type { AnalysisResult } from '../domain/result'
 import { formatPercent, formatTime, share } from '../format'
 import { useI18n } from '../i18n'
 import { mainLoss, timeCategories, type Category, type Scenario, type ScenarioId } from '../insights'
-import type { SlicerComparison } from '../slicer-metadata'
 import { AnimatedTime, Spinner } from '../ui'
 import { ScenarioRow, type ScenarioOutcome } from './scenario-row'
 
-export function SlicerBadge({ comparison }: { comparison: SlicerComparison | null }) {
+function confidenceLabel(value: TimeConfidence, t: ReturnType<typeof useI18n>['t']): string {
+  if (value.level === 'verified') {
+    return t.summary.confidenceVerified(Math.abs(value.deltaPercent ?? 0).toFixed(1))
+  }
+  return t.summary.confidenceApproximate
+}
+
+function confidenceExplain(value: TimeConfidence, t: ReturnType<typeof useI18n>['t']): string {
+  if (value.level === 'verified') return t.summary.confidenceHintVerified
+  if (value.reason === 'unverified_slicer') return t.summary.confidenceReasons.unverified(value.slicer ?? '')
+  if (value.reason === 'delta') {
+    return t.summary.confidenceReasons.delta(
+      `${(value.deltaPercent ?? 0) >= 0 ? '+' : '−'}${Math.abs(value.deltaPercent ?? 0).toFixed(1)}`,
+    )
+  }
+  if (value.reason === 'no_config') return t.summary.confidenceReasons.noConfig
+  return t.summary.confidenceReasons.noEstimate
+}
+
+export function ConfidenceBadge({
+  value,
+  compact = false,
+}: {
+  value: TimeConfidence
+  compact?: boolean
+}) {
   const { t } = useI18n()
-  if (!comparison) return <span className="chip chip-muted">{t.summary.noEstimate}</span>
+  const label = confidenceLabel(value, t)
+  const explain = confidenceExplain(value, t)
+  const chipClass = value.level === 'verified' ? 'chip-match' : 'chip-close'
+  const slicerLine =
+    value.slicerSeconds !== null
+      ? `${value.slicer || t.summary.slicer}: ${formatTime(value.slicerSeconds)}`
+      : null
+
+  if (compact) {
+    return (
+      <span className={`chip ${chipClass}`} title={`${label}. ${explain}`}>
+        {label}
+      </span>
+    )
+  }
+
   return (
-    <div className="slicer-badge">
-      <span className={`chip chip-${comparison.agreement}`}>
-        {t.summary.agreement[comparison.agreement]} {t.summary.slicerEstimate} ·{' '}
-        {comparison.deltaPercent >= 0 ? '+' : '−'}
-        {Math.abs(comparison.deltaPercent).toFixed(1)}%
-      </span>
-      <span className="muted">
-        {comparison.slicer || t.summary.slicer}: {formatTime(comparison.slicerSeconds)}
-      </span>
+    <div className="confidence">
+      <details>
+        <summary>
+          <span className={`chip ${chipClass}`} title={explain}>
+            {label}
+          </span>
+        </summary>
+        <p className="muted">{explain}</p>
+      </details>
+      {slicerLine && <p className="muted">{slicerLine}</p>}
     </div>
   )
 }
 
 export function Overview({
   baseline,
-  comparison,
+  confidence,
   density,
   diameter,
   warnings,
@@ -37,7 +78,7 @@ export function Overview({
   onOpenUpgrades,
 }: {
   baseline: AnalysisResult
-  comparison: SlicerComparison | null
+  confidence: TimeConfidence | null
   density: number | null
   diameter: number
   warnings: string[]
@@ -71,7 +112,11 @@ export function Overview({
         <strong className="big-time">
           <AnimatedTime seconds={baseline.estimatedSeconds} />
         </strong>
-        <SlicerBadge comparison={comparison} />
+        {confidence ? (
+          <ConfidenceBadge value={confidence} />
+        ) : (
+          <span className="chip chip-muted">{t.summary.noEstimate}</span>
+        )}
         <FileFacts result={baseline} density={density} diameter={diameter} />
         {warnings.map((warning) => (
           <div className="callout" key={warning}>

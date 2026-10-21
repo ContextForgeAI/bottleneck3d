@@ -48,7 +48,6 @@ const ru = {
     orca: (message: string) => `Не удалось получить G-code из Orca: ${message}`,
   },
   warnings: {
-    arcs: (count: string) => `${count} дуговых перемещений G2/G3 пока не учтено в оценке.`,
     imperial: 'G-code в дюймах пока не поддерживается.',
     noExtrusion: 'Не найдены перемещения с экструзией.',
   },
@@ -59,6 +58,18 @@ const ru = {
     agreement: { match: 'совпадает с', close: 'близко к', off: 'расходится с' } as Record<SlicerAgreement, string>,
     slicerEstimate: 'оценкой слайсера',
     slicer: 'слайсер',
+    confidenceVerified: (delta: string) => `Сверено со слайсером: ±${delta}%`,
+    confidenceApproximate: 'Приблизительно',
+    confidenceHintVerified: 'Оценка совпадает с оценщиком слайсера на этом файле.',
+    confidenceReasons: {
+      noEstimate: 'В файле нет оценки слайсера — сверить не с чем.',
+      noConfig: 'В файле нет конфига слайсера — ускорения и лимиты могут быть неполными.',
+      unverified: (name: string) =>
+        `Слайсер не из проверенных (${name || 'неизвестно'}). Проверены PrusaSlicer 2.5, OrcaSlicer 2.4 и 2.5.0-alpha с Klipper/Marlin.`,
+      delta: (delta: string) => `Расхождение с оценкой слайсера ${delta}%.`,
+    },
+    forecast: 'Прогноз без перенарезки',
+    forecastReslice: 'Прогноз без перенарезки · точно — кнопкой «Проверить в Orca»',
     plastic: 'Пластик',
     layers: 'Слои',
     upToZ: (z: string) => `до Z ${z} мм`,
@@ -328,7 +339,6 @@ const en: Dict = {
     orca: (message) => `Could not get G-code from Orca: ${message}`,
   },
   warnings: {
-    arcs: (count) => `${count} G2/G3 arc moves are not included in the estimate yet.`,
     imperial: 'Inch-based G-code is not supported yet.',
     noExtrusion: 'No extruding moves found.',
   },
@@ -339,6 +349,18 @@ const en: Dict = {
     agreement: { match: 'matches', close: 'close to', off: 'differs from' },
     slicerEstimate: 'the slicer estimate',
     slicer: 'slicer',
+    confidenceVerified: (delta) => `Checked against the slicer: ±${delta}%`,
+    confidenceApproximate: 'Approximate',
+    confidenceHintVerified: 'The estimate matches the slicer estimator on this file.',
+    confidenceReasons: {
+      noEstimate: 'The file has no slicer estimate to compare with.',
+      noConfig: 'The file has no slicer config — accelerations and limits may be incomplete.',
+      unverified: (name) =>
+        `Slicer is not on the verified list (${name || 'unknown'}). Verified: PrusaSlicer 2.5, OrcaSlicer 2.4 and 2.5.0-alpha with Klipper/Marlin.`,
+      delta: (delta) => `Differs from the slicer estimate by ${delta}%.`,
+    },
+    forecast: 'Forecast without re-slicing',
+    forecastReslice: 'Forecast without re-slicing · exact time — “Verify in Orca”',
     plastic: 'Filament',
     layers: 'Layers',
     upToZ: (z) => `up to Z ${z} mm`,

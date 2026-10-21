@@ -47,10 +47,7 @@ export interface FlowStats {
   extrusionSeconds: number
 }
 
-export type AnalysisWarning =
-  | { code: 'arcs'; count: number }
-  | { code: 'imperial' }
-  | { code: 'no_extrusion' }
+export type AnalysisWarning = { code: 'imperial' } | { code: 'no_extrusion' }
 
 /** Machine limit the what-if lever raised above the G-code config envelope. */
 export type EnvelopeLimit = 'machine_max_acceleration' | 'machine_max_speed'

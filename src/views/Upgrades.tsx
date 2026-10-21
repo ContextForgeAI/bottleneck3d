@@ -1,11 +1,13 @@
 import type { ReactNode } from 'react'
 import { CategoryBar, CategoryList } from '../charts'
+import type { TimeConfidence } from '../confidence'
 import type { PrinterSettings } from '../domain/profile'
 import type { AnalysisResult } from '../domain/result'
 import { formatDelta, formatNumber, formatPercent, formatTime, share } from '../format'
 import { useI18n } from '../i18n'
 import { LEVERS, timeCategories, type LeverKey, type Scenario, type ScenarioId } from '../insights'
 import { AnimatedTime, Lever, Spinner } from '../ui'
+import { ConfidenceBadge } from './Overview'
 import { ScenarioRow, type ScenarioOutcome } from './scenario-row'
 
 export interface ReslicePanel {
@@ -21,6 +23,7 @@ export interface ReslicePanel {
 
 export function Upgrades({
   baseline,
+  confidence,
   simulation,
   computing,
   scenarios,
@@ -37,6 +40,7 @@ export function Upgrades({
   reslice,
 }: {
   baseline: AnalysisResult
+  confidence?: TimeConfidence | null
   simulation: AnalysisResult | null
   computing: boolean
   scenarios: Scenario[]
@@ -200,6 +204,12 @@ export function Upgrades({
                 <AnimatedTime seconds={afterSeconds} />
               </b>
             </div>
+          </div>
+          <div className="confidence-inline">
+            {confidence && <ConfidenceBadge value={confidence} compact />}
+            <span className="muted">
+              {reslice?.available ? t.summary.forecastReslice : t.summary.forecast}
+            </span>
           </div>
           <div className={`result-delta ${delta <= -1 ? 'is-good' : delta >= 1 ? 'is-bad' : ''}`}>
             <strong>
