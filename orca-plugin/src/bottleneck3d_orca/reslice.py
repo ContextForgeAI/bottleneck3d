@@ -661,13 +661,16 @@ def find_orca_exe(explicit: str | Path | None = None) -> Path | None:
     env = os.environ.get("ORCA_SLICER") or os.environ.get("ORCA_EXE")
     if env:
         candidates.append(Path(env))
+    appimage = os.environ.get("APPIMAGE")
+    if appimage and Path(appimage).is_file():
+        return Path(appimage)
     image = _process_image()
     if image:
         candidates.append(image)
     python = Path(sys.executable).resolve()
     candidates.append(python)
     for folder in _search_dirs(candidates):
-        for name in ("orca-slicer.exe", "orca-slicer"):
+        for name in ("orca-slicer.exe", "orca-slicer", "OrcaSlicer", "MacOS/OrcaSlicer"):
             path = folder / name
             if path.is_file():
                 return path
@@ -691,7 +694,11 @@ def _search_dirs(starts: list[Path]) -> list[Path]:
 
 def _process_image() -> Path | None:
     if sys.platform != "win32":
-        return None
+        proc_exe = Path("/proc/self/exe")
+        try:
+            return proc_exe.resolve() if proc_exe.exists() else None
+        except OSError:
+            return None
     try:
         import ctypes
         from ctypes import wintypes

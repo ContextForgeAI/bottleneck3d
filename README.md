@@ -45,9 +45,14 @@ npm start        # dev server, opens the browser
 
 Open a `.gcode` file, a `bottleneck3d-report.json`, or the built-in demo.
 
-## Install into OrcaSlicer 2.5 (Windows)
+## Install into OrcaSlicer 2.5
 
-Requires Node 24 and [uv](https://docs.astral.sh/uv/).
+Users only need the plugin `.whl` file: see
+[`docs/INSTALL-ORCA.md`](docs/INSTALL-ORCA.md). `npm run package:orca` builds it
+into `dist-orca/`.
+
+To build and install from source on Windows (Node 24 and
+[uv](https://docs.astral.sh/uv/)):
 
 ```bash
 npm install

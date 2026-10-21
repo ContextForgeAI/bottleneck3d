@@ -13,7 +13,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "compare": "node demo/compare-slicer.ts",
-    "install:orca": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/install-orca-plugin.ps1"
+    "install:orca": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/install-orca-plugin.ps1",
+    "package:orca": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/install-orca-plugin.ps1 -BuildOnly"
   },
   "keywords": [
     "3d-printing",

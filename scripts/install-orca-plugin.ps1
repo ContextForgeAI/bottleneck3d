@@ -1,14 +1,12 @@
 # Builds the Orca page and the plugin wheel, then installs it for the current user.
 # Usage (from the web app root): powershell -ExecutionPolicy Bypass -File scripts/install-orca-plugin.ps1
+#   -BuildOnly  only build the wheel into dist-orca/ (the file to give to other users)
+param([switch]$BuildOnly)
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $PSScriptRoot
 $plugin = Join-Path $root 'orca-plugin'
-$wheelDir = Join-Path $env:TEMP 'b3d-wheel'
+$wheelDir = Join-Path $root 'dist-orca'
 $target = Join-Path $env:APPDATA 'OrcaSlicer\orca_plugins\bottleneck3d'
-
-if (Get-Process orca-slicer -ErrorAction SilentlyContinue) {
-  Write-Warning 'OrcaSlicer is running: the new plugin loads after Orca restarts.'
-}
 
 Push-Location $root
 try {
@@ -25,9 +23,17 @@ try {
   Get-ChildItem src -Filter *.egg-info -Directory | Remove-Item -Recurse -Force
 } finally { Pop-Location }
 
+$wheel = Get-ChildItem $wheelDir -Filter *.whl | Select-Object -First 1
+if ($BuildOnly) {
+  Write-Host "Built $($wheel.FullName)"
+  return
+}
+
+if (Get-Process orca-slicer -ErrorAction SilentlyContinue) {
+  Write-Warning 'OrcaSlicer is running: the new plugin loads after Orca restarts.'
+}
 New-Item -ItemType Directory -Force $target | Out-Null
 Remove-Item -Recurse -Force (Join-Path $target '__whl_extracted__') -ErrorAction SilentlyContinue
 Get-ChildItem $target -Filter *.whl | Remove-Item -Force
-$wheel = Get-ChildItem $wheelDir -Filter *.whl | Select-Object -First 1
 Copy-Item $wheel.FullName $target
 Write-Host "Installed $($wheel.Name) -> $target"
