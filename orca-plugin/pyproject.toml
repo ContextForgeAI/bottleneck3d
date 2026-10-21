@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "bottleneck3d-orca"
-version = "0.1.0"
+version = "0.3.0"
 description = "Bottleneck3D OrcaSlicer integration spike"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -15,3 +15,6 @@ authors = [
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+bottleneck3d_orca = ["web/index.html"]

@@ -6,7 +6,11 @@ build
 *.tsbuildinfo
 __pycache__
 *.pyc
+.venv
 bottleneck3d-report.json
 *.local
 demo/frames/
 .DS_Store
+dist-orca
+orca-plugin/src/bottleneck3d_orca/web/
+orca-plugin/tests/reslice_live_results.json

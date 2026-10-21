@@ -23,8 +23,12 @@ npm install
 npm run dev
 ```
 
-Open the local URL printed by Vite and either select a `.gcode` file, select a
-generated `bottleneck3d-report.json`, or run the built-in demonstration.
+Open the local URL printed by Vite (`npm start` opens the browser itself) and
+either select a `.gcode` file, select a generated `bottleneck3d-report.json`, or
+run the built-in demonstration.
+
+Inside OrcaSlicer 2.5 the same app runs as a «Bottleneck3D» main-window tab:
+`npm run build:orca`, then build and install the wheel from `orca-plugin/`.
 
 Useful checks:
 
@@ -76,11 +80,15 @@ solution, and the project can earn referral revenue.
 
 ## Prototype limitations
 
-The current motion model is deliberately conservative: it treats moves as
-independent trapezoidal segments and does not yet reproduce a firmware motion
-planner. G2/G3 arcs are detected but excluded from timing. Cooling impact is
-estimated from the configured minimum layer time rather than from thermal
-simulation.
+The motion planner reproduces the slicer time estimators (PrusaSlicer and
+OrcaSlicer `GCodeProcessor`: jerk junctions, Marlin planner passes, per-move
+accelerations and corner velocities emitted in the G-code) and also offers a
+Klipper lookahead model. `npm run compare -- <files|folder>` checks it against
+the estimate written by the slicer; on the current set of Orca and PrusaSlicer
+files it agrees within 0.1%. That is agreement with the slicer's model, not with
+the real printer: actual Klipper print time has not been validated yet. G2/G3
+arcs are detected but excluded from timing. Cooling impact is estimated from the
+configured minimum layer time rather than from thermal simulation.
 
 A ready G-code file is already a print plan optimized for the current slicer
 profile. Without Orca profile intent, Bottleneck3D can audit that plan but must

@@ -35,6 +35,37 @@ the missing model pieces that still require slicer intent or firmware modeling.
 by time contribution and attaches upgrade levers such as `flow`, `motion`,
 `cooling`, `quality_limited`, or `needs_role_data`.
 
+The script action `Bottleneck3D Export Presets` writes every visible printer,
+filament and process preset (system ones included, with Orca's resolved values)
+to `bottleneck3d-presets.json` in the plugin storage folder. Open it in the web
+UI under «Пресеты Orca» → «Файл экспорта…».
+
+## Bottleneck3D inside Orca
+
+The `Bottleneck3D` Pages capability adds a main-window tab with the whole web
+app (inlined into `web/index.html` by `npm run build:orca`). The page talks to
+the plugin through `window.orca` (`web_bridge.py`):
+
+- the newest G-code comes from the `GCodeExportFinished` event (Export G-code)
+  or, when the slicing step is enabled, from a copy made at `psGCodePostProcess`;
+- presets are read live from `orca.host.preset_bundle()`, no export file needed;
+- the page polls every 3 s and offers «Обновить из Orca» for a newer G-code.
+
+`Bottleneck3D Window` (Plugins → Run) opens the same app in a separate window.
+
+## Install into OrcaSlicer 2.5
+
+```bash
+npm run build:orca          # from the web app root; writes web/index.html
+uv build --wheel --out-dir /tmp/b3d-wheel
+```
+
+Copy the wheel into `%APPDATA%\OrcaSlicer\orca_plugins\bottleneck3d\` (one
+`.whl` per folder) or use Plugins → Install local plugin, then restart Orca.
+The slicing step is optional and enabled per process preset: Process → Others
+→ Slicing Pipeline Plugin (Advanced mode). Tracebacks go to
+`%APPDATA%\OrcaSlicer\log\python_*.log`.
+
 ## Local checks
 
 ```bash

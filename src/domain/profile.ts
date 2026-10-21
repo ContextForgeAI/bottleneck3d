@@ -1,4 +1,4 @@
-import { profileField, type ProfileField } from './sources'
+import { profileField, type ProfileField } from './sources.ts'
 
 export interface PrinterSettings {
   maxVolumetricFlow: number

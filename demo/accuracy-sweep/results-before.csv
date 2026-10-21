@@ -1,0 +1,77 @@
+model,group,param,value,orca_s,b3d_audit_s,audit_err_pct,b3d_whatif_s,whatif_err_pct,real_delta_s,pred_delta_s,delta_err_pct,segments,notes
+cube,base,base,1,815.000,830.253,1.872,832.016,2.088,0.000,1.763,,29176,real_delta≈0
+cube,print_accel,print_acceleration_x,0.5,869.000,893.124,2.776,908.018,4.490,54.000,77.765,44.009,29176,
+cube,print_accel,print_acceleration_x,1,815.000,830.253,1.872,832.016,2.088,0.000,1.763,,29176,real_delta≈0
+cube,print_accel,print_acceleration_x,2,802.000,816.619,1.823,791.307,-1.333,-13.000,-38.946,-199.588,29176,
+cube,print_accel,print_acceleration_x,4,802.000,816.178,1.768,768.749,-4.146,-13.000,-61.504,-373.106,29176,
+cube,travel_accel,travel_acceleration,1500,834.000,856.436,2.690,,,,,,29176,рычага нет
+cube,travel_accel,travel_acceleration,3000,822.000,840.723,2.278,,,,,,29176,рычага нет
+cube,travel_accel,travel_acceleration,6000,815.000,830.253,1.872,,,,,,29176,рычага нет
+cube,travel_accel,travel_acceleration,10000,815.000,830.253,1.872,,,,,,29176,рычага нет
+cube,print_speed,print_speed_x,0.5,858.000,872.962,1.744,1449.841,68.979,43.000,619.588,1340.903,29176,
+cube,print_speed,print_speed_x,1,815.000,830.253,1.872,832.016,2.088,0.000,1.763,,29176,real_delta≈0
+cube,print_speed,print_speed_x,1.5,809.000,825.602,2.052,655.960,-18.917,-6.000,-174.293,-2804.880,29176,
+cube,print_speed,print_speed_x,2,809.000,825.433,2.031,594.523,-26.511,-6.000,-235.730,-3828.841,29176,
+cube,travel_speed,travel_speed,150,813.000,828.394,1.894,,,,,,29176,рычага нет
+cube,travel_speed,travel_speed,250,814.000,829.321,1.882,,,,,,29176,рычага нет
+cube,travel_speed,travel_speed,400,816.000,831.601,1.912,,,,,,29176,рычага нет
+cube,flow,filament_max_volumetric_speed,8,820.000,834.802,1.805,833.369,1.630,5.000,3.116,-37.674,29176,
+cube,flow,filament_max_volumetric_speed,15,815.000,830.252,1.871,832.016,2.088,0.000,1.763,,29176,real_delta≈0
+cube,flow,filament_max_volumetric_speed,23,815.000,830.253,1.872,832.016,2.088,0.000,1.763,,29176,real_delta≈0
+cube,flow,filament_max_volumetric_speed,40,815.000,830.253,1.872,832.016,2.088,0.000,1.763,,29176,real_delta≈0
+cube,machine_accel,machine_max_acceleration_xyet,3000,854.000,876.362,2.619,,,,,,29176,рычага нет
+cube,machine_accel,machine_max_acceleration_xyet,6000,815.000,830.253,1.872,,,,,,29176,рычага нет
+cube,machine_accel,machine_max_acceleration_xyet,12000,815.000,830.253,1.872,,,,,,29176,рычага нет
+cube,machine_accel,machine_max_acceleration_xyet,20000,815.000,830.253,1.872,,,,,,29176,рычага нет
+cube,machine_speed,machine_max_speed_xy,200,815.000,831.078,1.973,,,,,,29176,рычага нет
+cube,machine_speed,machine_max_speed_xy,300,815.000,830.253,1.872,,,,,,29176,рычага нет
+cube,machine_speed,machine_max_speed_xy,500,815.000,830.253,1.872,,,,,,29176,рычага нет
+cube,jerk,role_jerk,5,864.000,874.454,1.210,,,,,,29176,рычага нет
+cube,jerk,role_jerk,9,822.000,834.197,1.484,,,,,,29176,рычага нет
+cube,jerk,role_jerk,15,807.000,822.420,1.911,,,,,,29176,рычага нет
+cube,jerk,role_jerk,25,807.000,822.420,1.911,,,,,,29176,рычага нет
+cube,cooling,slow_down_layer_time,0,615.000,639.390,3.966,832.016,35.287,-200.000,1.763,100.881,29176,
+cube,cooling,slow_down_layer_time,6,815.000,830.253,1.872,832.016,2.088,0.000,1.763,,29176,real_delta≈0
+cube,cooling,slow_down_layer_time,15,1635.000,1647.788,0.782,1578.713,-3.443,820.000,748.460,-8.724,29176,
+cube,layer_height,layer_height,0.12,1290.000,1314.270,1.881,,,,,,46280,рычага нет
+cube,layer_height,layer_height,0.2,815.000,830.253,1.872,,,,,,29176,рычага нет
+cube,layer_height,layer_height,0.28,622.000,634.916,2.076,,,,,,21559,рычага нет
+quartz,base,base,1,30663.000,31565.411,2.943,31565.411,2.943,0.000,0.000,,2851653,print>3h; real_delta≈0
+dragon,base,base,1,18099.000,18504.217,2.239,18504.217,2.239,0.000,0.000,,1769397,print>3h; real_delta≈0
+penholder,base,base,1,1720.000,1828.332,6.298,1828.332,6.298,0.000,0.000,,86474,real_delta≈0
+penholder,print_accel,print_acceleration_x,0.5,1956.000,2094.592,7.085,2155.601,10.205,236.000,327.269,38.673,86474,
+penholder,print_accel,print_acceleration_x,1,1720.000,1828.332,6.298,1828.332,6.298,0.000,0.000,,86474,real_delta≈0
+penholder,print_accel,print_acceleration_x,2,1672.000,1774.369,6.123,1625.876,-2.759,-48.000,-202.456,-321.784,86474,
+penholder,print_accel,print_acceleration_x,4,1672.000,1774.039,6.103,1505.798,-9.940,-48.000,-322.535,-571.947,86474,
+penholder,travel_accel,travel_acceleration,1500,1827.000,1981.456,8.454,,,,,,86474,рычага нет
+penholder,travel_accel,travel_acceleration,3000,1760.000,1885.894,7.153,,,,,,86474,рычага нет
+penholder,travel_accel,travel_acceleration,6000,1720.000,1828.332,6.298,,,,,,86474,рычага нет
+penholder,travel_accel,travel_acceleration,10000,1720.000,1828.332,6.298,,,,,,86474,рычага нет
+penholder,print_speed,print_speed_x,0.5,2138.000,2232.026,4.398,2584.912,20.903,418.000,756.579,81.000,86466,
+penholder,print_speed,print_speed_x,1,1720.000,1828.332,6.298,1828.332,6.298,0.000,0.000,,86474,real_delta≈0
+penholder,print_speed,print_speed_x,1.5,1694.000,1804.027,6.495,1658.594,-2.090,-26.000,-169.738,-552.839,86474,
+penholder,print_speed,print_speed_x,2,1691.000,1801.601,6.541,1604.903,-5.091,-29.000,-223.429,-670.445,86474,
+penholder,travel_speed,travel_speed,150,1733.000,1840.776,6.219,,,,,,86474,рычага нет
+penholder,travel_speed,travel_speed,250,1720.000,1826.810,6.210,,,,,,86474,рычага нет
+penholder,travel_speed,travel_speed,400,1724.000,1832.748,6.308,,,,,,86474,рычага нет
+penholder,flow,filament_max_volumetric_speed,8,1744.000,1849.184,6.031,1840.768,5.549,24.000,12.436,-48.183,86474,
+penholder,flow,filament_max_volumetric_speed,15,1720.000,1828.323,6.298,1828.332,6.298,0.000,0.000,,86474,real_delta≈0
+penholder,flow,filament_max_volumetric_speed,23,1720.000,1828.332,6.298,1828.332,6.298,0.000,0.000,,86474,real_delta≈0
+penholder,flow,filament_max_volumetric_speed,40,1720.000,1828.332,6.298,1828.332,6.298,0.000,0.000,,86474,real_delta≈0
+penholder,machine_accel,machine_max_acceleration_xyet,3000,1919.000,2064.037,7.558,,,,,,86474,рычага нет
+penholder,machine_accel,machine_max_acceleration_xyet,6000,1720.000,1828.332,6.298,,,,,,86474,рычага нет
+penholder,machine_accel,machine_max_acceleration_xyet,12000,1720.000,1828.332,6.298,,,,,,86474,рычага нет
+penholder,machine_accel,machine_max_acceleration_xyet,20000,1720.000,1828.332,6.298,,,,,,86474,рычага нет
+penholder,machine_speed,machine_max_speed_xy,200,1727.000,1836.701,6.352,,,,,,86474,рычага нет
+penholder,machine_speed,machine_max_speed_xy,300,1720.000,1828.332,6.298,,,,,,86474,рычага нет
+penholder,machine_speed,machine_max_speed_xy,500,1720.000,1828.332,6.298,,,,,,86474,рычага нет
+penholder,jerk,role_jerk,5,1877.000,1938.939,3.300,,,,,,86474,рычага нет
+penholder,jerk,role_jerk,9,1751.000,1842.166,5.207,,,,,,86474,рычага нет
+penholder,jerk,role_jerk,15,1693.000,1801.902,6.433,,,,,,86474,рычага нет
+penholder,jerk,role_jerk,25,1693.000,1801.902,6.433,,,,,,86474,рычага нет
+penholder,cooling,slow_down_layer_time,0,1678.000,1789.548,6.648,1828.332,8.959,-42.000,0.000,100.000,86474,
+penholder,cooling,slow_down_layer_time,6,1720.000,1828.332,6.298,1828.332,6.298,0.000,0.000,,86474,real_delta≈0
+penholder,cooling,slow_down_layer_time,15,2733.000,2814.816,2.994,2408.421,-11.876,1013.000,580.089,-42.736,86474,
+penholder,layer_height,layer_height,0.12,2710.000,2882.561,6.368,,,,,,141274,рычага нет
+penholder,layer_height,layer_height,0.2,1720.000,1828.332,6.298,,,,,,86474,рычага нет
+penholder,layer_height,layer_height,0.28,1324.000,1404.876,6.108,,,,,,63970,рычага нет
