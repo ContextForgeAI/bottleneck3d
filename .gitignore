@@ -1,0 +1,12 @@
+node_modules
+dist
+coverage
+build
+*.egg-info
+*.tsbuildinfo
+__pycache__
+*.pyc
+bottleneck3d-report.json
+*.local
+demo/frames/
+.DS_Store

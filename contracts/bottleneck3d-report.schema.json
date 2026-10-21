@@ -1,0 +1,129 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bottleneck3d.local/schemas/bottleneck3d-report.schema.json",
+  "title": "Bottleneck3D Report",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "generatedAt",
+    "mode",
+    "gcode",
+    "profile"
+  ],
+  "properties": {
+    "schemaVersion": { "type": "integer", "const": 1 },
+    "generatedAt": { "type": "string" },
+    "mode": { "type": "string" },
+    "gcode": {
+      "type": "object",
+      "required": ["fileName", "sizeBytes"],
+      "properties": {
+        "fileName": { "type": "string" },
+        "sizeBytes": { "type": ["integer", "null"], "minimum": 0 }
+      },
+      "additionalProperties": true
+    },
+    "profile": {
+      "type": "object",
+      "required": ["schemaVersion", "source", "fields"],
+      "properties": {
+        "schemaVersion": { "type": "integer" },
+        "source": { "type": "string" },
+        "fields": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/$defs/profileField" }
+        }
+      },
+      "additionalProperties": true
+    },
+    "gcodeCommands": {
+      "type": ["object", "null"],
+      "properties": {
+        "schemaVersion": { "type": "integer" },
+        "source": { "type": "string" },
+        "lineCount": { "type": "integer" },
+        "observedCommandCount": { "type": "integer" },
+        "commands": { "type": "object" },
+        "lastByCommand": { "type": "object" }
+      },
+      "additionalProperties": true
+    },
+    "effectiveProfile": {
+      "type": ["object", "null"],
+      "properties": {
+        "schemaVersion": { "type": "integer" },
+        "source": { "type": "string" },
+        "fields": { "type": "object" },
+        "conflicts": { "type": "array" }
+      },
+      "additionalProperties": true
+    },
+    "gcodeTimeline": {
+      "type": ["object", "null"],
+      "properties": {
+        "schemaVersion": { "type": "integer" },
+        "source": { "type": "string" },
+        "lineCount": { "type": "integer" },
+        "moveCount": { "type": "integer" },
+        "extrusionMoveCount": { "type": "integer" },
+        "stateChanges": { "type": "array" },
+        "roleChanges": { "type": "array" },
+        "roleSummary": { "type": "object" },
+        "totals": { "type": "object" },
+        "groups": { "type": "array" }
+      },
+      "additionalProperties": true
+    },
+    "timeWaterfall": {
+      "type": ["object", "null"],
+      "properties": {
+        "schemaVersion": { "type": "integer" },
+        "source": { "type": "string" },
+        "mode": { "type": "string" },
+        "confidence": { "type": "string" },
+        "items": { "type": "array" },
+        "totals": { "type": "object" },
+        "unavailable": { "type": "array" }
+      },
+      "additionalProperties": true
+    },
+    "roleImpact": {
+      "type": ["object", "null"],
+      "properties": {
+        "schemaVersion": { "type": "integer" },
+        "source": { "type": "string" },
+        "mode": { "type": "string" },
+        "totalSeconds": { "type": "number" },
+        "topRole": { "type": ["string", "null"] },
+        "roles": { "type": "array" }
+      },
+      "additionalProperties": true
+    },
+    "notes": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "additionalProperties": true,
+  "$defs": {
+    "profileField": {
+      "type": "object",
+      "required": ["value", "source", "confidence", "key", "category", "notes"],
+      "properties": {
+        "value": {},
+        "source": { "type": "string" },
+        "confidence": {
+          "type": "string",
+          "enum": ["high", "medium", "low", "unknown"]
+        },
+        "key": { "type": "string" },
+        "category": { "type": "string" },
+        "notes": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "additionalProperties": true
+    }
+  }
+}
