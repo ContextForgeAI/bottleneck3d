@@ -1,13 +1,31 @@
 # Bottleneck3D
 
-Bottleneck3D shows where a 3D print spends its time and what an upgrade would
-really change. It reads a sliced G-code file locally (nothing is uploaded),
-reproduces the slicer's own time estimate, splits the time into printing,
-acceleration, travel and layer-cooling slowdown, and simulates upgrades:
-acceleration, print speed, hotend flow and minimum layer time.
+Bottleneck3D показывает, **куда уходит время печати** и что реально изменит
+апгрейд (ускорение, скорость, поток хотэнда, мин. время слоя).
 
-It runs as a web page and as a tab inside OrcaSlicer 2.5. The interface is in
-Russian and English.
+Работает как вкладка в **OrcaSlicer 2.5** и как отдельная веб-страница.
+Интерфейс: русский и английский. Файлы никуда не загружаются.
+
+---
+
+## Установка плагина в Orca (для всех)
+
+Нужны только OrcaSlicer и один файл. **Node и Python не нужны.**
+
+1. Скачайте плагин из релиза  
+   **[v0.4.0 → Assets → `bottleneck3d_orca-0.4.0-py3-none-any.whl`](https://github.com/ContextForgeAI/bottleneck3d/releases/tag/v0.4.0)**  
+   (блок Assets внизу страницы; не берите Source code).
+2. В Orca: меню ≡ → **Plugins** → **Browse plugins** ▾ →  
+   **Install local plugin** → выберите `.whl`.
+3. **Перезапустите Orca.**
+4. Нарежьте модель → **Export G-code** → откройте вкладку **Bottleneck3D**.
+
+Подробно (RU/EN), обновление, удаление, типичные проблемы:  
+**[docs/INSTALL-ORCA.md](docs/INSTALL-ORCA.md)**
+
+Требуется OrcaSlicer **2.5.0-alpha или новее**. Проверено на Windows.
+
+---
 
 ## What it does
 
@@ -36,7 +54,7 @@ All of this is agreement with the slicer's estimator, not with a real printer:
 real print times have not been validated yet. Cura, Bambu Studio, SuperSlicer
 and newer Orca builds are untested.
 
-## Run the web app
+## Run the web app (developers)
 
 ```bash
 npm install
@@ -45,23 +63,15 @@ npm start        # dev server, opens the browser
 
 Open a `.gcode` file, a `bottleneck3d-report.json`, or the built-in demo.
 
-## Install into OrcaSlicer 2.5
-
-Users only need the plugin `.whl` file: see
-[`docs/INSTALL-ORCA.md`](docs/INSTALL-ORCA.md). `npm run package:orca` builds it
-into `dist-orca/`.
-
-To build and install from source on Windows (Node 24 and
-[uv](https://docs.astral.sh/uv/)):
+## Build / install plugin from source (developers)
 
 ```bash
 npm install
-npm run install:orca
+npm run package:orca   # → dist-orca/*.whl  (give this file to users)
+npm run install:orca   # build + install into %APPDATA% on this PC
 ```
 
-The script builds the page and the plugin wheel and copies it into
-`%APPDATA%\OrcaSlicer\orca_plugins\bottleneck3d\`. Restart Orca, slice and
-export a model, then open the «Bottleneck3D» tab. Plugin details are in
+Needs Node 24 and [uv](https://docs.astral.sh/uv/). Details:
 [`orca-plugin/README.md`](orca-plugin/README.md).
 
 ## Checks

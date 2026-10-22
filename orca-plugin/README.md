@@ -1,8 +1,14 @@
-# Bottleneck3D OrcaSlicer plugin spike
+# Bottleneck3D OrcaSlicer plugin
 
-This package is a local integration spike for OrcaSlicer. It can be developed
-and tested without OrcaSlicer installed: tests use a fake context object that
-implements the `ctx.config_value(key)` API.
+**End users:** do not build from this folder. Download the `.whl` from
+[Releases](https://github.com/ContextForgeAI/bottleneck3d/releases) and follow
+**[docs/INSTALL-ORCA.md](../docs/INSTALL-ORCA.md)**.
+
+---
+
+Developer notes below. The package can be developed and tested without
+OrcaSlicer installed: tests use a fake context object that implements the
+`ctx.config_value(key)` API.
 
 Inside OrcaSlicer, the package exposes a slicing-pipeline capability that runs
 at `psGCodePostProcess`, reads resolved profile values, and writes a local
