@@ -1,29 +1,29 @@
 # Bottleneck3D
 
-Bottleneck3D показывает, **куда уходит время печати** и что реально изменит
-апгрейд (ускорение, скорость, поток хотэнда, мин. время слоя).
+Bottleneck3D shows **where a 3D print spends its time** and what an upgrade
+would really change (acceleration, speed, hotend flow, minimum layer time).
 
-Работает как вкладка в **OrcaSlicer 2.5** и как отдельная веб-страница.
-Интерфейс: русский и английский. Файлы никуда не загружаются.
+It runs as a tab inside **OrcaSlicer 2.5** and as a standalone web page.
+The UI is available in English and Russian. Nothing is uploaded.
 
 ---
 
-## Установка плагина в Orca (для всех)
+## Install the Orca plugin (everyone)
 
-Нужны только OrcaSlicer и один файл. **Node и Python не нужны.**
+You only need OrcaSlicer and one file. **Node and Python are not required.**
 
-1. Скачайте плагин из релиза  
+1. Download the plugin from the release  
    **[v0.4.0 → Assets → `bottleneck3d_orca-0.4.0-py3-none-any.whl`](https://github.com/ContextForgeAI/bottleneck3d/releases/tag/v0.4.0)**  
-   (блок Assets внизу страницы; не берите Source code).
-2. В Orca: меню ≡ → **Plugins** → **Browse plugins** ▾ →  
-   **Install local plugin** → выберите `.whl`.
-3. **Перезапустите Orca.**
-4. Нарежьте модель → **Export G-code** → откройте вкладку **Bottleneck3D**.
+   (Assets is at the bottom of the page; do not download Source code).
+2. In Orca: menu ≡ → **Plugins** → **Browse plugins** ▾ →  
+   **Install local plugin** → pick the `.whl`.
+3. **Restart Orca.**
+4. Slice a model → **Export G-code** → open the **Bottleneck3D** tab.
 
-Подробно (RU/EN), обновление, удаление, типичные проблемы:  
+Full guide (update, uninstall, troubleshooting):  
 **[docs/INSTALL-ORCA.md](docs/INSTALL-ORCA.md)**
 
-Требуется OrcaSlicer **2.5.0-alpha или новее**. Проверено на Windows.
+Requires OrcaSlicer **2.5.0-alpha or newer**. Tested on Windows.
 
 ---
 
@@ -32,7 +32,7 @@ Bottleneck3D показывает, **куда уходит время печат
 - **Overview** — total time, the main bottleneck and the file it came from.
 - **Time** — time by line role, volumetric flow and per-layer chart.
 - **Upgrades** — ready-made upgrade scenarios ranked by savings for this file,
-  plus manual levers. Inside Orca, «Check in Orca» reslices the model with the
+  plus manual levers. Inside Orca, **Check in Orca** reslices the model with the
   chosen change and shows Orca's exact estimate next to the instant forecast.
 - **Details** — the motion model, limits and settings read from the file.
 
@@ -45,7 +45,7 @@ fitting) the mean difference is 0.1% and the worst is 0.6%.
 
 The instant upgrade forecast does not reslice the model, so speed and
 acceleration changes can differ from a real reslice: the slicer also rebuilds
-per-layer slowdowns. «Check in Orca» removes that error; on the test models it
+per-layer slowdowns. **Check in Orca** removes that error; on the test models it
 matched Orca's own reslice to the second. The accuracy bench and its results
 are in [`demo/accuracy-sweep/`](demo/accuracy-sweep/) and
 [`docs/ACCURACY-TEST-PLAN.md`](docs/ACCURACY-TEST-PLAN.md).
@@ -90,7 +90,7 @@ cd orca-plugin && uv run --with pytest pytest tests
   config in the file, difference above 1%).
 - Cooling impact comes from the configured minimum layer time, not from a
   thermal simulation.
-- «Check in Orca» slices the plate as STL: modifiers, painting and per-object
+- **Check in Orca** slices the plate as STL: modifiers, painting and per-object
   settings are lost. A baseline reslice without changes is subtracted to cancel
   most of that error.
 - Do not base purchase decisions on the forecast alone until it is validated
