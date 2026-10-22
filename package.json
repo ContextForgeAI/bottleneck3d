@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:pages": "tsc -b && vite build --mode pages",
     "build:orca": "tsc -b && node scripts/build-orca-page.mjs",
     "start": "vite --open",
     "lint": "eslint .",

@@ -6,135 +6,162 @@
 **Analyze any G-code in your browser. Get deeper insights and verify upgrade
 scenarios inside OrcaSlicer 2.5+.**
 
-Bottleneck3D shows **where a 3D print spends its time** and what an upgrade
-would really change (acceleration, speed, hotend flow, minimum layer time).
+Bottleneck3D is a local-first **3D print time analyzer** and **G-code bottleneck
+analysis** tool. Open an exported print file and see **where the time goes**
+(printing at set speed, acceleration, travel, layer-cooling slowdown), which
+constraint looks limiting on *this* file, and how changes to acceleration,
+speed, hotend flow, or minimum layer time could shift that estimate.
 
-It runs as a **standalone web page** and, optionally, as a tab inside OrcaSlicer.
-The UI is available in English and Russian. Nothing is uploaded.
+Nothing is uploaded. The UI is available in **English and Russian**.
 
-| Mode | OrcaSlicer version |
-| --- | --- |
-| **Web app** (open a `.gcode` in the browser) | **Not tied to 2.5.0-alpha.** Works with G-code from older Orca (e.g. 2.4), PrusaSlicer, and similar. No plugin install. |
-| **Orca plugin** (tab inside the slicer) | Needs **2.5.0-alpha or newer** (Python plugins). |
+### [Try Bottleneck3D](https://contextforgeai.github.io/bottleneck3d/)
+
+Open the hosted web app — no install. Load your exported `.gcode` (or the
+built-in demo). Works without OrcaSlicer 2.5; the optional plugin adds
+in-slicer extras and **Verify in Orca**.
 
 ---
 
-## Install the Orca plugin (optional)
+## Choose how to use it
 
-Only if you want the tab inside Orca. You need OrcaSlicer **2.5.0-alpha or newer**
-and one file. **Node and Python are not required.** Older Orca cannot install this
-plugin — use the web app instead and open your exported `.gcode`.
+| | Standalone web app | OrcaSlicer plugin (optional) |
+| --- | --- | --- |
+| **What you get** | Full analysis UI for an exported `.gcode` | Same UI as a tab inside Orca, plus live presets and **Verify in Orca** (reslice to check upgrade scenarios) |
+| **Orca version** | **Not tied to 2.5.** Open G-code from Orca 2.4, PrusaSlicer, and similar | Requires **OrcaSlicer 2.5.0-alpha or newer** (Python plugins) |
+| **How to start** | **[Try online](https://contextforgeai.github.io/bottleneck3d/)** or run locally with Node | Download one `.whl` — **no Node or Python** for end users |
+| **Best when** | Quick try in the browser, or older Orca | Orca 2.5+ with in-slicer workflow + reslice verification |
 
-1. Download the plugin from the release  
+Opening a file does **not** mean every slicer or every G-code dialect is fully
+validated. Depth and trust depend on metadata in the file and on the commands
+we support. See [Accuracy](#accuracy-and-known-limitations).
+
+### Run the web app locally (optional)
+
+Needs [Node.js](https://nodejs.org/) if you prefer a local copy:
+
+```bash
+npm install
+npm start        # opens the local app in your browser
+```
+
+Then **Open file** and pick an exported `.gcode` (or use the built-in demo).
+Same UI as the hosted site; you still lose in-Orca extras without the plugin.
+
+### Install the OrcaSlicer plugin (optional)
+
+For OrcaSlicer **2.5.0-alpha+** only. Older Orca cannot load this plugin — use
+the web app instead.
+
+1. Download  
    **[v0.4.0 → Assets → `bottleneck3d_orca-0.4.0-py3-none-any.whl`](https://github.com/ContextForgeAI/bottleneck3d/releases/tag/v0.4.0)**  
-   (Assets is at the bottom of the page; do not download Source code).
-2. In Orca: menu ≡ → **Plugins** → **Browse plugins** ▾ →  
-   **Install local plugin** → pick the `.whl`.
-3. **Restart Orca.**
-4. Slice a model → **Export G-code** → open the **Bottleneck3D** tab.
+   (expand **Assets**; do not download Source code).
+2. Orca → menu ≡ → **Plugins** → **Browse plugins** ▾ → **Install local plugin**
+   → pick the `.whl`.
+3. Restart Orca → Slice → **Export G-code** → open the **Bottleneck3D** tab.
 
-Full guide (update, uninstall, troubleshooting):  
-**[docs/INSTALL-ORCA.md](docs/INSTALL-ORCA.md)**
-
-Tested on Windows.
+Step-by-step guide (update, uninstall, troubleshooting):  
+**[docs/INSTALL-ORCA.md](docs/INSTALL-ORCA.md)** · tested on Windows.
 
 ---
 
-## Screenshots
+## What you see (examples)
 
-After install, Bottleneck3D appears as a tab next to Prepare / Preview / Device.
-Export G-code, then open the tab.
+Same UI in the browser and in the Orca tab. These shots are from a real file
+inside Orca; captions describe the decision, not only the tab name.
 
-**Overview** — print time, trust badge vs the slicer, where time goes, and the
-best upgrades for this file:
+**Where does the time go — and what limits this print?**  
+Overview: total time, trust badge vs the slicer’s estimate, time mix, and the
+ranked upgrade ideas for *this* G-code:
 
-![Overview](docs/images/overview.png)
+![Overview — time mix and bottleneck](docs/images/overview.png)
 
-**Time** — time by line type, hotend load, and time per layer:
+**Which line types and layers eat the clock?**  
+Time: breakdown by feature (walls, infill, travel…), hotend load vs your flow
+limit, and time per layer:
 
-![Time](docs/images/time.png)
+![Time — roles, flow, layers](docs/images/time.png)
 
-**Upgrades** — ready-made scenarios and sliders; **Verify in Orca** reslices for
-an exact estimate:
+**What if I change acceleration or speed?**  
+Upgrades: ready-made scenarios and sliders for a quick forecast. Instant
+numbers can diverge from a real reslice; in Orca 2.5+, **Verify in Orca**
+re-slices to compare against Orca’s own estimate:
 
-![Upgrades](docs/images/upgrades.png)
+![Upgrades — scenarios and Verify in Orca](docs/images/upgrades.png)
 
-**Details** — which planner was used and the limits taken from the G-code:
+**What limits and planner did the estimate use?**  
+Details: estimator model and values taken from the G-code / config block:
 
-![Details](docs/images/details.png)
+![Details — planner and file limits](docs/images/details.png)
 
 ---
 
-## What it does
+## Main features
 
-- **Overview** — total time, the main bottleneck and the file it came from.
-- **Time** — time by line role, volumetric flow and per-layer chart.
-- **Upgrades** — ready-made upgrade scenarios ranked by savings for this file,
-  plus manual levers. Inside Orca, **Verify in Orca** reslices the model with the
-  chosen change and shows Orca's exact estimate next to the instant forecast.
-- **Details** — the motion model, limits and settings read from the file.
+- **Print time analysis** — split into printing at set speed, acceleration and
+  braking, travel/retracts, and layer-cooling slowdown when present.
+- **Bottleneck reading** — which subsystem looks dominant on the loaded file.
+- **Upgrade simulation** — acceleration, profile speeds, hotend volumetric
+  flow, minimum layer time; scenarios ranked by estimated impact on *this*
+  file (not a generic hardware promise).
+- **Trust badge** — “checked against the slicer ±X%” or “approximate” with a
+  reason (missing estimate/config, untested slicer, large delta).
+- **OrcaSlicer plugin** — integrated tab; optional **Verify in Orca** reslice
+  for upgrade checks on 2.5.0-alpha+.
 
-## Accuracy
+---
 
-`npm run compare -- <files|folder>` checks the estimate against the one the
-slicer wrote into the file. On the current test set (PrusaSlicer 2.5,
-OrcaSlicer 2.4 and 2.5.0-alpha with Klipper, including files with G2/G3 arc
-fitting) the mean difference is 0.1% and the worst is 0.6%.
+## Accuracy and known limitations
 
-The instant upgrade forecast does not reslice the model, so speed and
-acceleration changes can differ from a real reslice: the slicer also rebuilds
-per-layer slowdowns. **Verify in Orca** removes that error; on the test models it
-matched Orca's own reslice to the second. The accuracy bench and its results
-are in [`demo/accuracy-sweep/`](demo/accuracy-sweep/) and
+On the current test set (PrusaSlicer 2.5, OrcaSlicer 2.4 and 2.5.0-alpha with
+Klipper, including G2/G3 arc-fitted files), `npm run compare` against the
+estimate written into the G-code shows about **0.1% mean** difference and
+**0.6% worst**. Bench notes:
+[`demo/accuracy-sweep/`](demo/accuracy-sweep/),
 [`docs/ACCURACY-TEST-PLAN.md`](docs/ACCURACY-TEST-PLAN.md).
 
-All of this is agreement with the slicer's estimator, not with a real printer:
-real print times have not been validated yet. Cura, Bambu Studio, SuperSlicer
-and newer Orca builds are untested.
+Honest limits (do not skip these):
 
-## Run the web app
+- Agreement with the **slicer’s** estimated time is **not** validation against
+  real printer wall-clock time.
+- **Cura, Bambu Studio, SuperSlicer**, and **untested / newer Orca builds** are
+  not fully validated — treat results as approximate unless the trust badge
+  says otherwise.
+- **Instant upgrade forecasts** do not reslice; they can differ from a real
+  reslice (layer slowdowns rebuild). **Verify in Orca** closes that gap when
+  the plugin is available; on the test models it matched Orca’s reslice to the
+  second.
+- **Cooling** uses configured minimum layer time, not a thermal simulation.
+- **Verify in Orca** exports the plate as STL: modifiers, painting, and
+  per-object settings may be lost (a no-change baseline reslice is subtracted).
+- Do **not** base purchase decisions on unvalidated forecasts alone. See
+  [ROADMAP.md](ROADMAP.md) and
+  [`docs/IMPROVEMENT-PLAN.md`](docs/IMPROVEMENT-PLAN.md).
 
-The website does **not** require OrcaSlicer 2.5.0-alpha. Open any exported
-`.gcode` (Orca 2.4, PrusaSlicer, etc.). You lose only the in-Orca extras
-(live presets and **Verify in Orca**).
+---
+
+## Local development
+
+For contributors working on the web app or packaging the plugin.
 
 ```bash
 npm install
-npm start        # dev server, opens the browser
-```
-
-Open a `.gcode` file, a `bottleneck3d-report.json`, or the built-in demo.
-
-## Build / install plugin from source (developers)
-
-```bash
-npm install
-npm run package:orca   # → dist-orca/*.whl  (give this file to users)
-npm run install:orca   # build + install into %APPDATA% on this PC
-```
-
-Needs Node 24 and [uv](https://docs.astral.sh/uv/). Details:
-[`orca-plugin/README.md`](orca-plugin/README.md).
-
-## Checks
-
-```bash
+npm start        # Vite dev server
 npm test
 npm run lint
 npm run build
+```
+
+Plugin from source (Node 24 + [uv](https://docs.astral.sh/uv/)):
+
+```bash
+npm run package:orca   # → dist-orca/*.whl for distribution
+npm run install:orca   # build + install into %APPDATA% on this PC
 cd orca-plugin && uv run --with pytest pytest tests
 ```
 
-## Limitations
+More detail: [`orca-plugin/README.md`](orca-plugin/README.md),
+[ARCHITECTURE.md](ARCHITECTURE.md).
 
-- The time card shows how far the number can be trusted: «checked against the
-  slicer ±X%» or «approximate» with the reason (untested slicer, no estimate or
-  config in the file, difference above 1%).
-- Cooling impact comes from the configured minimum layer time, not from a
-  thermal simulation.
-- **Check in Orca** slices the plate as STL: modifiers, painting and per-object
-  settings are lost. A baseline reslice without changes is subtracted to cancel
-  most of that error.
-- Do not base purchase decisions on the forecast alone until it is validated
-  against real prints. See [ROADMAP.md](ROADMAP.md) and
-  [`docs/IMPROVEMENT-PLAN.md`](docs/IMPROVEMENT-PLAN.md).
+## License
+
+[MIT](LICENSE)
