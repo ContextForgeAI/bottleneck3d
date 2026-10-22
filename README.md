@@ -3,17 +3,27 @@
 [![GitHub release](https://img.shields.io/github/v/release/ContextForgeAI/bottleneck3d?include_prereleases)](https://github.com/ContextForgeAI/bottleneck3d/releases)
 [![Downloads](https://img.shields.io/github/downloads/ContextForgeAI/bottleneck3d/total)](https://github.com/ContextForgeAI/bottleneck3d/releases)
 
+**Analyze any G-code in your browser. Get deeper insights and verify upgrade
+scenarios inside OrcaSlicer 2.5+.**
+
 Bottleneck3D shows **where a 3D print spends its time** and what an upgrade
 would really change (acceleration, speed, hotend flow, minimum layer time).
 
-It runs as a tab inside **OrcaSlicer 2.5** and as a standalone web page.
+It runs as a **standalone web page** and, optionally, as a tab inside OrcaSlicer.
 The UI is available in English and Russian. Nothing is uploaded.
+
+| Mode | OrcaSlicer version |
+| --- | --- |
+| **Web app** (open a `.gcode` in the browser) | **Not tied to 2.5.0-alpha.** Works with G-code from older Orca (e.g. 2.4), PrusaSlicer, and similar. No plugin install. |
+| **Orca plugin** (tab inside the slicer) | Needs **2.5.0-alpha or newer** (Python plugins). |
 
 ---
 
-## Install the Orca plugin (everyone)
+## Install the Orca plugin (optional)
 
-You only need OrcaSlicer and one file. **Node and Python are not required.**
+Only if you want the tab inside Orca. You need OrcaSlicer **2.5.0-alpha or newer**
+and one file. **Node and Python are not required.** Older Orca cannot install this
+plugin — use the web app instead and open your exported `.gcode`.
 
 1. Download the plugin from the release  
    **[v0.4.0 → Assets → `bottleneck3d_orca-0.4.0-py3-none-any.whl`](https://github.com/ContextForgeAI/bottleneck3d/releases/tag/v0.4.0)**  
@@ -26,7 +36,7 @@ You only need OrcaSlicer and one file. **Node and Python are not required.**
 Full guide (update, uninstall, troubleshooting):  
 **[docs/INSTALL-ORCA.md](docs/INSTALL-ORCA.md)**
 
-Requires OrcaSlicer **2.5.0-alpha or newer**. Tested on Windows.
+Tested on Windows.
 
 ---
 
@@ -73,7 +83,7 @@ fitting) the mean difference is 0.1% and the worst is 0.6%.
 
 The instant upgrade forecast does not reslice the model, so speed and
 acceleration changes can differ from a real reslice: the slicer also rebuilds
-per-layer slowdowns. **Check in Orca** removes that error; on the test models it
+per-layer slowdowns. **Verify in Orca** removes that error; on the test models it
 matched Orca's own reslice to the second. The accuracy bench and its results
 are in [`demo/accuracy-sweep/`](demo/accuracy-sweep/) and
 [`docs/ACCURACY-TEST-PLAN.md`](docs/ACCURACY-TEST-PLAN.md).
@@ -82,7 +92,11 @@ All of this is agreement with the slicer's estimator, not with a real printer:
 real print times have not been validated yet. Cura, Bambu Studio, SuperSlicer
 and newer Orca builds are untested.
 
-## Run the web app (developers)
+## Run the web app
+
+The website does **not** require OrcaSlicer 2.5.0-alpha. Open any exported
+`.gcode` (Orca 2.4, PrusaSlicer, etc.). You lose only the in-Orca extras
+(live presets and **Verify in Orca**).
 
 ```bash
 npm install

@@ -18,6 +18,8 @@ you do not install Python — Orca loads it for you.
 | Windows (tested) | Building from source |
 
 Orca **2.4 and older** have no Python plugins — the tab will not appear.
+Use the **web app** instead and open your `.gcode` there; the website is **not**
+tied to 2.5.0-alpha (see [README](../README.md)).
 
 Check your version: **Help → About**.
 
