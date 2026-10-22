@@ -1,5 +1,8 @@
 # Bottleneck3D
 
+[![GitHub release](https://img.shields.io/github/v/release/ContextForgeAI/bottleneck3d?include_prereleases)](https://github.com/ContextForgeAI/bottleneck3d/releases)
+[![Downloads](https://img.shields.io/github/downloads/ContextForgeAI/bottleneck3d/total)](https://github.com/ContextForgeAI/bottleneck3d/releases)
+
 Bottleneck3D shows **where a 3D print spends its time** and what an upgrade
 would really change (acceleration, speed, hotend flow, minimum layer time).
 
