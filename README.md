@@ -27,12 +27,37 @@ Requires OrcaSlicer **2.5.0-alpha or newer**. Tested on Windows.
 
 ---
 
+## Screenshots
+
+After install, Bottleneck3D appears as a tab next to Prepare / Preview / Device.
+Export G-code, then open the tab.
+
+**Overview** — print time, trust badge vs the slicer, where time goes, and the
+best upgrades for this file:
+
+![Overview](docs/images/overview.png)
+
+**Time** — time by line type, hotend load, and time per layer:
+
+![Time](docs/images/time.png)
+
+**Upgrades** — ready-made scenarios and sliders; **Verify in Orca** reslices for
+an exact estimate:
+
+![Upgrades](docs/images/upgrades.png)
+
+**Details** — which planner was used and the limits taken from the G-code:
+
+![Details](docs/images/details.png)
+
+---
+
 ## What it does
 
 - **Overview** — total time, the main bottleneck and the file it came from.
 - **Time** — time by line role, volumetric flow and per-layer chart.
 - **Upgrades** — ready-made upgrade scenarios ranked by savings for this file,
-  plus manual levers. Inside Orca, **Check in Orca** reslices the model with the
+  plus manual levers. Inside Orca, **Verify in Orca** reslices the model with the
   chosen change and shows Orca's exact estimate next to the instant forecast.
 - **Details** — the motion model, limits and settings read from the file.
 

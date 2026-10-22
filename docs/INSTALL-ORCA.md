@@ -77,10 +77,15 @@ Then:
 
 - **Overview** and **Time** — where print time goes.
 - **Upgrades** — what an upgrade would change.  
-  **Check in Orca** reslices with your chosen change and shows Orca’s exact
+  **Verify in Orca** reslices with your chosen change and shows Orca’s exact
   estimate (usually 10–60 seconds).
 
 Nothing is uploaded: G-code, models, and presets stay on your PC.
+
+You should see something like this (Overview). More screenshots:
+[README → Screenshots](../README.md#screenshots).
+
+![Overview after Export G-code](images/overview.png)
 
 ---
 
@@ -103,7 +108,7 @@ it the same way (step 3). Restart Orca.
 | No Bottleneck3D tab | Restart Orca; or Plugins → Bottleneck3D Window → Run |
 | Empty tab / “web UI not built” | Re-download the `.whl` from release Assets (not Source code) |
 | No file / empty analysis | **Export G-code**, then Refresh from Orca |
-| No “Check in Orca” button | Rare: set env var `ORCA_SLICER` to the full path of `orca-slicer.exe`, restart Orca |
+| No “Verify in Orca” button | Rare: set env var `ORCA_SLICER` to the full path of `orca-slicer.exe`, restart Orca |
 
 Error logs (attach the latest file to an Issue):  
 `%APPDATA%\OrcaSlicer\log\python_*.log`
